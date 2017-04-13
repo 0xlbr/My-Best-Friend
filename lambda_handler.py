@@ -114,6 +114,9 @@ def lambda_handler(event, context):
         elif event['request']['intent']['name'] == "ShareQuoteIntent":
             return send_to_email(event['session'])
 
+        elif event['request']['intent']['name'] == "AuthorIntent":
+            return say_author_name(event['request']['intent']['slots']['topic']['value'], event['session'])
+
         elif event['request']['intent']['name'] == "Stop":
             return build_response({}, build_speechlet_response("Closing", "<speak>Okay. Bye.</speak>", "", "", True))
 
@@ -150,6 +153,10 @@ def tell_one_quote(topic, session):
     context = '<speak> ' + quotes[index] + ' </speak>'
     return build_response({"topic": topic, "index": index, "last_quote": quotes[index]}, build_speechlet_response("Quote", context, quotes[index], "Would you like a new one? Or do you want to do something with this quote?", False))
 
+def say_author_name(topic, session):
+    quote = session['attributes']['last_quote']
+    author = quotes_scrape.get_author(topic, quote)
+    return build_response({"topic": session['attributes']['topic'], "index": session['attributes']['index'], "last_quote": session['attributes']['last_quote']}, build_speechlet_response("Author", "<speak>" + author +  "</speak>", "The author of quote " + session['attributes']['last_quote'] + " is " + author, "I'm still here", False))
 
 def todos_sns_topic():
     return boto3.resource('sns').Topic('arn:aws:sns:eu-west-1:847828999320:sharequote')

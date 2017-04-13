@@ -20,18 +20,19 @@ def get_quotes(keyWord):
     quotes_authors = dict(zip(quotes, authors))
     return quotes
 
-def get_author(quote):
+def get_author(topic, quote):
+    quotes = get_quotes(topic)
     author  = quotes_authors.get(quote)
     return author
 
 
 # for testing
-d = get_quotes("sports")
-print quotes_authors
+#d = get_quotes("sports")
+#print quotes_authors
 
-random_quote = d[1]
-print random_quote
-print get_author(random_quote)
+#random_quote = d[1]
+#print random_quote
+#print get_author(random_quote)
 
 #for q in get_quotes("sports"):
 #    print q
