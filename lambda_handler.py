@@ -43,38 +43,6 @@ def build_response(session_attributes, speechlet_response):
     }
 
 
-# --------------- Functions that control the skill's behavior ------------------
-
-def get_welcome_response():
-    """ If we wanted to initialize the session to have some attributes we could
-    add those here
-    """
-
-    session_attributes = {}
-    card_title = "Welcome"
-    speech_output = "Welcome to the Alexa Skills Kit sample. " \
-                    "Please tell me your favorite color by saying, " \
-                    "my favorite color is red"
-    # If the user either does not reply to the welcome message or says something
-    # that is not understood, they will be prompted again with this text.
-    reprompt_text = "Please tell me your favorite color by saying, " \
-                    "my favorite color is red."
-    should_end_session = False
-    return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
-
-
-def handle_session_end_request():
-    card_title = "Session Ended"
-    speech_output = "Thank you for trying the Alexa Skills Kit sample. " \
-                    "Have a nice day! "
-    # Setting this to true ends the session and exits the skill.
-    should_end_session = True
-    return build_response({}, build_speechlet_response(
-        card_title, speech_output, None, should_end_session))
-
-
-
 
 
 # --------------- Events ------------------
@@ -82,19 +50,9 @@ def handle_session_end_request():
 def on_session_started(session_started_request, session):
     """ Called when the session starts """
 
-    print("on_session_started requestId=" + session_started_request['requestId']
-          + ", sessionId=" + session['sessionId'])
-
 
 def on_launch(launch_request, session):
-    """ Called when the user launches the skill without specifying what they
-    want
-    """
-
-    print("on_launch requestId=" + launch_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
-    # Dispatch to your skill's launch
-    return get_welcome_response()
+    return build_response({'topic': 'none', 'index': -1}, build_speechlet_response("Welcome.", "Welcome. How can I help you?", "If you want to be motivated, just ask me to tell you a quote.", False))
 
 def on_session_ended(session_ended_request, session):
     """ Called when the user ends the session.
@@ -104,6 +62,14 @@ def on_session_ended(session_ended_request, session):
     print("on_session_ended requestId=" + session_ended_request['requestId'] +
           ", sessionId=" + session['sessionId'])
     # add cleanup logic here
+
+
+def handle_session_end_request():
+    card_title = "Skill Ended"
+    speech_output = "Okay. Bye"
+    should_end_session = True
+    return build_response({}, build_speechlet_response(
+        card_title, speech_output, None, should_end_session))
 
 
 # --------------- Main handler ------------------
@@ -145,23 +111,11 @@ def lambda_handler(event, context):
             return tell_one_quote(event['session']['attributes']['topic'] , event['session'])
 
     elif event['request']['type'] == "SessionEndedRequest":
-        return stop(event['request'], event['session'])
+        return on_session_ended(event['request'], event['session'])
 
-
-
-def launch():
-    return build_response({}, build_speechlet_response("Welcome.", "Welcome. How can I help you?", "If you want to be motivated, just ask me to tell you a quote.", False))
 
 def help():
     return build_response({}, build_speechlet_response("Help","You can ask me to inspire you about specific topics", "You could for example say: motivate me about work.", False))
-
-
-def stop(request, session):
-    return build_speechlet_response("Stop", "I hope I was able to help you. Bye.", "", True)
-
-
-def cancel():
-    return stop()
 
 def list_quotes(topic, session):
     quotes = quotes_scrape.get_quotes(topic)
