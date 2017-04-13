@@ -96,29 +96,6 @@ def on_launch(launch_request, session):
     # Dispatch to your skill's launch
     return get_welcome_response()
 
-
-def on_intent(intent_request, session):
-    """ Called when the user specifies an intent for this skill """
-
-    print("on_intent requestId=" + intent_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
-
-    intent = intent_request['intent']
-    intent_name = intent_request['intent']['name']
-
-    # Dispatch to your skill's intent handlers
-    if intent_name == "MyColorIsIntent":
-        return set_color_in_session(intent, session)
-    elif intent_name == "WhatsMyColorIntent":
-        return get_color_from_session(intent, session)
-    elif intent_name == "AMAZON.HelpIntent":
-        return get_welcome_response()
-    elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
-        return handle_session_end_request()
-    else:
-        raise ValueError("Invalid intent")
-
-
 def on_session_ended(session_ended_request, session):
     """ Called when the user ends the session.
 
@@ -138,6 +115,9 @@ def lambda_handler(event, context):
     print("event.session.application.applicationId=" +
           event['session']['application']['applicationId'])
 
+
+    print(event)
+
     """
     Uncomment this if statement and populate with your skill's application ID to
     prevent someone else from configuring a skill that sends requests to this
@@ -147,7 +127,6 @@ def lambda_handler(event, context):
     #         "amzn1.echo-sdk-ams.app.[unique-value-here]"):
     #     raise ValueError("Invalid Application ID")
 
-    event.o
     if event['session']['new']:
         on_session_started({'requestId': event['request']['requestId']},
                            event['session'])
@@ -162,16 +141,19 @@ def lambda_handler(event, context):
         elif event['request']['intent']['name'] == "QuoteOneIntent":
             return tell_one_quote(event['request']['intent']['slots']['topic']['value'], event['session'])
 
+        elif event['request']['intent']['name'] == "QuoteAnotherIntent":
+            return tell_one_quote(event['session']['attributes']['topic'] , event['session'])
+
     elif event['request']['type'] == "SessionEndedRequest":
         return stop(event['request'], event['session'])
 
 
 
 def launch():
-    return build_speechlet_response("Welcome.", "Welcome. How can I help you?", "If you want to be motivated, just ask me to tell you a quote.", False)
+    return build_response({}, build_speechlet_response("Welcome.", "Welcome. How can I help you?", "If you want to be motivated, just ask me to tell you a quote.", False))
 
 def help():
-    return build_speechlet_response("Help","You can ask me to inspire you about specific topics", "You could for example say: motivate me about work.", False)
+    return build_response({}, build_speechlet_response("Help","You can ask me to inspire you about specific topics", "You could for example say: motivate me about work.", False))
 
 
 def stop(request, session):
@@ -193,14 +175,11 @@ def list_quotes(topic, session):
 
 def tell_one_quote(topic, session):
     quotes = quotes_scrape.get_quotes(topic)
-    session.attributes['quotes'] = quotes
-    session.attributes['sessionId'] = session.attributes
-
-
-    context = "<speak>" +  quotes[0] + "</speak>"
+    index = session['attributes']['index'] + 1
+    context = "<speak>" +  quotes[index] + "</speak>"
     session.attributes['last_quote'] = quotes[0]
 
-    return build_speechlet_response("Quote", quotes[0], "Would you like a new one? Or do you want to do something with this quote?", False)
+    return build_speechlet_response({'topic'}, "Quote", quotes[0], "Would you like a new one? Or do you want to do something with this quote?", False)
 
 def share_last_quote(time):
    # if session.attributes['current_quote'] != "":
