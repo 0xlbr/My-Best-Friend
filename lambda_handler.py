@@ -53,7 +53,7 @@ def on_session_started(session_started_request, session):
 
 
 def on_launch(launch_request, session):
-    return build_response({"topic": "none", "index": -1, "last_quote": "none"}, build_speechlet_response("Welcome.", "<speak>Welcome. How can I help you?</speak>", "", "If you want to be motivated, just ask me to tell you a quote.", False))
+    return build_response({"topic": "none", "index": -1, "last_quote": "none"}, build_speechlet_response("Welcome.", "<speak>Welcome. I can give you a quote about whatever you want.</speak>", "", "If you want to be motivated, just ask me to tell you a quote.", False))
 
 def on_session_ended(session_ended_request, session):
     """ Called when the user ends the session.
@@ -114,6 +114,9 @@ def lambda_handler(event, context):
         elif event['request']['intent']['name'] == "ShareQuoteIntent":
             return send_to_email(event['session'])
 
+        elif event['request']['intent']['name'] == "Stop":
+            return build_response({}, build_speechlet_response("Closing", "<speak>Okay. Bye.</speak>", "", "", True))
+
     elif event['request']['type'] == "SessionEndedRequest":
         return on_session_ended(event['request'], event['session'])
 
@@ -138,7 +141,6 @@ def list_quotes(topic, session):
 
 def tell_one_quote(topic, session):
     quotes = quotes_scrape.get_quotes(topic)
-    print(session['attributes'])
     if (session['attributes'] == {}):
         index = 0
     else:
