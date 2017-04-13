@@ -69,6 +69,15 @@ def tell_one_quote(topic):
 
     return question(context)
 
+@ask.intent('AuthorNameIntent')
+def tell_name_of_author():
+    # give the name of the author of the quote saved in the attributes of the session
+    quote = session.attributes['last_quote'] 
+    author = quotes_scrape.get_author(quote)
+    context = "<speak>" +  author + "<break time=\"2s\" /> Would you like another quote? </speak>"
+    return question(context)
+
+
 @ask.intent('ShareQuoteIntent', mapping={'': ''})
 def share_last_quote(time):
    # if session.attributes['current_quote'] != "":
