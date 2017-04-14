@@ -119,7 +119,7 @@ def lambda_handler(event, context):
             return say_author_name(event['session'])
 
         elif event['request']['intent']['name'] == "AdviceIntent":
-            return tell_one_advice(event['request']['intent']['slots']['topic']['value'], event['session'])
+            return tell_one_advice(event['request']['intent'], event['session'])
 
         elif event['request']['intent']['name'] == "Stop":
             return build_response({}, build_speechlet_response("Closing", "<speak>Okay. Bye.</speak>", "", "", True))
@@ -144,7 +144,7 @@ def list_quotes(topic, session):
 
     context = context + ' </speak>'
 
-    return build_response({"topic": topic, "index": -1, "last_quote": "none"}, build_speechlet_response("Quotes", context, app_content, "", True))
+    return build_response({"topic": topic, "index": -1, "last_quote": "none"}, build_speechlet_response("Quotes", context, app_content, "I'm still here", True))
 
 def tell_one_quote(topic, session):
     quotes = quotes_scrape.get_quotes(topic)
@@ -159,7 +159,7 @@ def tell_one_quote(topic, session):
     context = '<speak> ' + quotes[index] + ' </speak>'
     return build_response({"topic": topic, "index": index, "last_quote": quotes[index]}, build_speechlet_response("Quote", context, quotes[index], "Would you like a new one? Or do you want to do something with this quote?", False))
 
-def tell_one_advice(topic, session):
+def tell_one_advice(intent, session):
     advice = {"study": [
                         "Remember that being well hydrated is essential for your brain to work at its best. Make sure you keep drinking plenty of water throughout your revision, and also on the exam day",
                         "Develop a study routine that works for you. If you study better in the morning, start early before taking a break at lunchtime. Or if you're more productive at nighttime, take a larger break earlier on so you're ready to settle down come evening.",
@@ -185,7 +185,21 @@ def tell_one_advice(topic, session):
                         "Your thoughts become what you are. What you think, you believe.",
                         ]
     }
+
+    if ('slots' in intent and
+                'topic' in intent['slots'] and
+                'value' in intent['slots']['topic'] ):
+        topic = intent['slots']['topic']['value']
+
+    elif ('attributes' in session):
+        topic = session['attributes']['topic']
+
+    else:
+        topic = "general"
+
+
     randomIndex = random.randint(0,5)
+
     if topic == "study":
         this_advice = advice["study"][randomIndex]
     elif topic == "work":
@@ -193,7 +207,7 @@ def tell_one_advice(topic, session):
     else:
         this_advice = advice["general"] [randomIndex]
     context = '<speak> ' + this_advice + ' </speak>'
-    return build_response({"topic": topic, "index": 0, "last_quote": this_advice}, build_speechlet_response("Quote", context, this_advice, "Would you like a new one? Or do you want to share this advice?", False))
+    return build_response({"topic": topic, "index": -1, "last_quote": this_advice}, build_speechlet_response("Quote", context, this_advice, "Would you like a new one? Or do you want to share this advice?", False))
 
 
 def say_author_name(session):

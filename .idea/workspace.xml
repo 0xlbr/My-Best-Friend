@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0e1c9a26-ad9e-441f-85ee-b97f42a0e82d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mybestfriend.zip" afterPath="$PROJECT_DIR$/mybestfriend.zip" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lambda_handler.py" afterPath="$PROJECT_DIR$/lambda_handler.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,13 +15,25 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="lambda_handler.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="lambda_handler.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lambda_handler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="250">
-              <caret line="175" column="55" lean-forward="true" selection-start-line="175" selection-start-column="0" selection-end-line="176" selection-end-column="0" />
+            <state relative-caret-position="1590">
+              <caret line="111" column="39" lean-forward="true" selection-start-line="111" selection-start-column="39" selection-end-line="111" selection-end-column="39" />
               <folding>
                 <element signature="e#330#367#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="quotes_scrape.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/quotes_scrape.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="48" lean-forward="false" selection-start-line="17" selection-start-column="48" selection-end-line="17" selection-end-column="48" />
+              <folding>
+                <element signature="e#17#38#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -318,10 +329,20 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/lambda_handler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="175" column="55" lean-forward="true" selection-start-line="175" selection-start-column="0" selection-end-line="176" selection-end-column="0" />
+        <state relative-caret-position="1590">
+          <caret line="111" column="39" lean-forward="true" selection-start-line="111" selection-start-column="39" selection-end-line="111" selection-end-column="39" />
           <folding>
             <element signature="e#330#367#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/quotes_scrape.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="48" lean-forward="false" selection-start-line="17" selection-start-column="48" selection-end-line="17" selection-end-column="48" />
+          <folding>
+            <element signature="e#17#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
