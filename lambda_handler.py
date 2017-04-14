@@ -115,7 +115,7 @@ def lambda_handler(event, context):
             return send_to_email(event['session'])
 
         elif event['request']['intent']['name'] == "AuthorIntent":
-            return say_author_name(event['request']['intent']['slots']['topic']['value'], event['session'])
+            return say_author_name(event['session'])
 
         elif event['request']['intent']['name'] == "Stop":
             return build_response({}, build_speechlet_response("Closing", "<speak>Okay. Bye.</speak>", "", "", True))
@@ -144,17 +144,20 @@ def list_quotes(topic, session):
 
 def tell_one_quote(topic, session):
     quotes = quotes_scrape.get_quotes(topic)
-    if (session['attributes'] == {}):
-        index = 0
+    if ('attributes' in session):
+        if (session['attributes'] == {}): #or session['attributes'] == {}):
+         index = 0
+        else:
+         index = session['attributes']['index'] + 1
     else:
-        index = session['attributes']['index'] + 1
+        index = 0
 
-    print(index)
     context = '<speak> ' + quotes[index] + ' </speak>'
     return build_response({"topic": topic, "index": index, "last_quote": quotes[index]}, build_speechlet_response("Quote", context, quotes[index], "Would you like a new one? Or do you want to do something with this quote?", False))
 
-def say_author_name(topic, session):
+def say_author_name(session):
     quote = session['attributes']['last_quote']
+    topic = session['attributes']['topic']
     author = quotes_scrape.get_author(topic, quote)
     return build_response({"topic": session['attributes']['topic'], "index": session['attributes']['index'], "last_quote": session['attributes']['last_quote']}, build_speechlet_response("Author", "<speak>" + author +  "</speak>", "The author of quote " + session['attributes']['last_quote'] + " is " + author, "I'm still here", False))
 
