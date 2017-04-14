@@ -177,13 +177,14 @@ def tell_one_advice(topic, session):
                         "Remember that it's impossible to get everything done. Also remember that odds are good that 20 percent of your thoughts, conversations and activities produce 80 percent of your results.",
                         ],
               "general": [
-                        "Make the journey fun. It’s an awesome game! The minute you make it serious, there’s a big chance it will start carrying a heavy emotional weight and you will lose perspective and become stuck again.",
+                        "Make the journey fun. It's an awesome game! The minute you make it serious, there's a big chance it will start carrying a heavy emotional weight and you will lose perspective and become stuck again.",
                         "Motivation means action and action brings results. Sometimes your actions fail to bring the results you want. So you prefer to be nice to yourself and not put yourself in a difficult situation.",
-                        "Don’t rely on others. You should never expect others to do it for you, not even your partner, friend or boss. They are all busy with their own needs. No one will make you happy or achieve your goals for you. It’s all on you.",
+                        "Don't rely on others. You should never expect others to do it for you, not even your partner, friend or boss. They are all busy with their own needs. No one will make you happy or achieve your goals for you. It's all on you.",
                         "Plan. Know your three steps forward. You do not need more.",
                         "You have the opportunity to make a difference in the world and in yourself. Make the day meaningful.",
                         "Your thoughts become what you are. What you think, you believe.",
-                        ],
+                        ]
+    }
     randomIndex = random.randint(0,5)
     if topic == "study":
         this_advice = advice["study"][randomIndex]
@@ -192,7 +193,7 @@ def tell_one_advice(topic, session):
     else:
         this_advice = advice["general"] [randomIndex]
     context = '<speak> ' + this_advice + ' </speak>'
-    return build_response({"topic": topic, "last_quote": this_advice}, build_speechlet_response("Quote", context, this_advice, "Would you like a new one? Or do you want to share this advice?", False))
+    return build_response({"topic": topic, "index": 0, "last_quote": this_advice}, build_speechlet_response("Quote", context, this_advice, "Would you like a new one? Or do you want to share this advice?", False))
 
 
 def say_author_name(session):
@@ -207,6 +208,6 @@ def todos_sns_topic():
 
 def send_to_email(session):
     message = session['attributes']['last_quote']
-    todos_sns_topic().publish(Message=message, Subject="Here is the awesome quote")
+    todos_sns_topic().publish(Message=message, Subject="Here is something awesome for you")
 
-    return build_response({"topic": session['attributes']['topic'], "index": session['attributes']['index'], "last_quote": session['attributes']['last_quote']}, build_speechlet_response("Success", "<speak>I successfully shared the quote.</speak>", "I successfully shared: " + session['attributes']['last_quote'], "I'm still here", False))
+    return build_response({"topic": session['attributes']['topic'], "index": session['attributes']['index'], "last_quote": session['attributes']['last_quote']}, build_speechlet_response("Success", "<speak>I successfully shared it.</speak>", "I successfully shared: " + session['attributes']['last_quote'], "I'm still here", False))
