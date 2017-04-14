@@ -13,6 +13,7 @@ from __future__ import print_function
 # --------------- Helpers that build all of the responses ----------------------
 import quotes_scrape
 import boto3
+import random
 
 
 def build_speechlet_response(title, output, content, reprompt_text, should_end_session):
@@ -117,6 +118,9 @@ def lambda_handler(event, context):
         elif event['request']['intent']['name'] == "AuthorIntent":
             return say_author_name(event['session'])
 
+        elif event['request']['intent']['name'] == "AdviceIntent":
+            return tell_one_advice(event['request']['intent']['slots']['topic']['value'], event['session'])
+
         elif event['request']['intent']['name'] == "Stop":
             return build_response({}, build_speechlet_response("Closing", "<speak>Okay. Bye.</speak>", "", "", True))
 
@@ -154,6 +158,42 @@ def tell_one_quote(topic, session):
 
     context = '<speak> ' + quotes[index] + ' </speak>'
     return build_response({"topic": topic, "index": index, "last_quote": quotes[index]}, build_speechlet_response("Quote", context, quotes[index], "Would you like a new one? Or do you want to do something with this quote?", False))
+
+def tell_one_advice(topic, session):
+    advice = {"study": [
+                        "Remember that being well hydrated is essential for your brain to work at its best. Make sure you keep drinking plenty of water throughout your revision, and also on the exam day",
+                        "Develop a study routine that works for you. If you study better in the morning, start early before taking a break at lunchtime. Or if you're more productive at nighttime, take a larger break earlier on so you're ready to settle down come evening.",
+                        "Get together with friends for a study session. You may have questions that they have the answers to and vice versa. As long as you make sure you stay focused on the topic for an agreed amount of time, this can be one of the most effective ways to challenge yourself.",
+                        "Give yourself enough time to study. Don't leave it until the last minute. While some students do seem to thrive on last-minute 'cramming', it's widely accepted that for most of us, this is not the best way to approach an exam.",
+                        "Use flow charts and diagrams. Visual aids can be really helpful when revising. At the start of a topic, challenge yourself to write down everything you already know about a topic - and then highlight where the gaps lie.",
+                        "Try and get rid of all distractions, and make sure you feel as comfortable and able to focus as possible. For some people, this may mean almost complete silence; for others, background music helps.",
+                        ],
+              "work": [
+                        "Just as you need to let go of work to enjoy your time at home, it's important to leave personal worries at home so you can focus and be productive at work.",
+                        "Carry a schedule and record all your thoughts, conversations and activities for a week. This will help you understand how much you can get done during the course of a day and where your precious moments are going. You'll see how much time is actually spent producing results and how much time is wasted on unproductive thoughts, conversations and actions.",
+                        "Plan to spend at least 50 percent of your time engaged in the thoughts, activities and conversations that produce most of your results.",
+                        "Take the first 30 minutes of every day to plan your day. Don't start your day until you complete your time plan. The most important time of your day is the time you schedule to schedule time.",
+                        "Block out other distractions like Facebook and other forms of social media unless you use these tools to generate business.",
+                        "Remember that it's impossible to get everything done. Also remember that odds are good that 20 percent of your thoughts, conversations and activities produce 80 percent of your results.",
+                        ],
+              "general": [
+                        "Make the journey fun. It’s an awesome game! The minute you make it serious, there’s a big chance it will start carrying a heavy emotional weight and you will lose perspective and become stuck again.",
+                        "Motivation means action and action brings results. Sometimes your actions fail to bring the results you want. So you prefer to be nice to yourself and not put yourself in a difficult situation.",
+                        "Don’t rely on others. You should never expect others to do it for you, not even your partner, friend or boss. They are all busy with their own needs. No one will make you happy or achieve your goals for you. It’s all on you.",
+                        "Plan. Know your three steps forward. You do not need more.",
+                        "You have the opportunity to make a difference in the world and in yourself. Make the day meaningful.",
+                        "Your thoughts become what you are. What you think, you believe.",
+                        ],
+    randomIndex = random.randint(0,5)
+    if topic == "study":
+        this_advice = advice["study"][randomIndex]
+    elif topic == "work":
+        this_advice = advice["work"][randomIndex]
+    else:
+        this_advice = advice["general"] [randomIndex]
+    context = '<speak> ' + this_advice + ' </speak>'
+    return build_response({"topic": topic, "last_quote": this_advice}, build_speechlet_response("Quote", context, this_advice, "Would you like a new one? Or do you want to share this advice?", False))
+
 
 def say_author_name(session):
     quote = session['attributes']['last_quote']
